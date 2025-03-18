@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Semantic Similarity Calculator</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Semantic Similarity Calculator</h1>
+        <form id="similarityForm">
+            <div class="form-group">
+                <label for="text1">Text 1:</label>
+                <textarea id="text1" name="text1" rows="4" placeholder="Enter the first text..." required></textarea>
+            </div>
+            <div class="form-group">
+                <label for="text2">Text 2:</label>
+                <textarea id="text2" name="text2" rows="4" placeholder="Enter the second text..." required></textarea>
+            </div>
+            <button type="submit">Calculate Similarity</button>
+        </form>
+        <div id="result" class="result">
+            <h2>Result:</h2>
+            <p id="similarityScore">-</p>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('similarityForm').addEventListener('submit', function (event) {
+            event.preventDefault(); // Prevent form submission
+
+            // Get the input values
+            const text1 = document.getElementById('text1').value;
+            const text2 = document.getElementById('text2').value;
+
+            // Send a POST request to the Flask API
+            fetch('/similarity', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ text1: text1, text2: text2 }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Display the similarity score
+                document.getElementById('similarityScore').textContent = data.similarity_score.toFixed(2);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        });
+    </script>
+</body>
+</html>
